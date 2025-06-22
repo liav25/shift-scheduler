@@ -1,0 +1,17 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "./start.sh"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+
+[env]
+NODE_ENV = "production"
+PYTHONUNBUFFERED = "1"
+PORT = "8000"
+HOST = "0.0.0.0"
+
+[[services]]
+serviceName = "shift-scheduler" 

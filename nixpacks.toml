@@ -1,0 +1,18 @@
+[phases.setup]
+nixPkgs = ["nodejs_18", "python39", "python39Packages.pip"]
+
+[phases.install]
+cmds = [
+    "pip3 install -r requirements.txt",
+    "pip3 install -r backend/requirements.txt",
+    "npm install",
+    "cd frontend && npm install"
+]
+
+[phases.build]
+cmds = [
+    "cd frontend && npm run build"
+]
+
+[start]
+cmd = "./start.sh" 

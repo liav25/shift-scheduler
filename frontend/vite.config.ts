@@ -8,12 +8,12 @@ export default defineConfig({
     port: 3000,
     open: false // Don't auto-open browser since we'll run with npm run dev
   },
+  preview: {
+    port: 3000,
+    host: '0.0.0.0'
+  },
   build: {
     outDir: 'dist',
     sourcemap: true
-  },
-  define: {
-    // Ensure environment variables are available
-    'process.env': process.env
   }
 }) 

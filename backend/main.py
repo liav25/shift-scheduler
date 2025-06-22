@@ -19,9 +19,25 @@ app = FastAPI(
 )
 
 # Enable CORS for frontend
+cors_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    # Railway automatically provides production URLs
+    os.environ.get("FRONTEND_URL", ""),
+]
+
+# Filter out empty strings
+cors_origins = [origin for origin in cors_origins if origin]
+
+# For Railway deployment, allow all origins in production if FRONTEND_URL not set
+if os.environ.get("RAILWAY_ENVIRONMENT") == "production" and not os.environ.get(
+    "FRONTEND_URL"
+):
+    cors_origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -320,14 +336,19 @@ async def get_algorithm_info():
 
 
 if __name__ == "__main__":
+    import os
+
+    # Get port from environment variable (Railway sets this)
+    port = int(os.environ.get("PORT", 8000))
+
     print("🚀 Starting Shift Scheduler Backend...")
-    print("📡 Backend will be available at: http://localhost:8000")
-    print("📖 API Documentation: http://localhost:8000/docs")
+    print(f"📡 Backend will be available at: http://0.0.0.0:{port}")
+    print(f"📖 API Documentation: http://0.0.0.0:{port}/docs")
 
     uvicorn.run(
         app,
         host="0.0.0.0",
-        port=8000,
+        port=port,
         log_level="info",
         reload=False,  # Set to True for development
     )

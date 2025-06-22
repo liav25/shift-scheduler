@@ -76,6 +76,9 @@ temp/
 .pytest_cache/
 .coverage
 
+# Railway deployment
+.railway/
+
 # Lock files (optional - you can keep these)
 # package-lock.json
 # frontend/package-lock.json
