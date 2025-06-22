@@ -4,7 +4,7 @@
   "description": "Shift scheduling algorithm with React frontend and Python backend",
   "private": true,
   "scripts": {
-    "build": "cd frontend && npm ci && npm run build",
+    "build": "cd frontend && npm install --no-save && npm run build",
     "install:frontend": "cd frontend && npm install",
     "start": "npm run start:backend & npm run start:frontend & wait",
     "start:backend": "cd backend && python main.py",
