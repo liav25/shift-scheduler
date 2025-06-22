@@ -7,8 +7,10 @@ nixPkgs = ["nodejs_18", "python39", "python39Packages.pip"]
 
 [phases.install]
 cmds = [
+    "pip3 install --upgrade pip",
     "pip3 install -r requirements.txt",
     "cd backend && pip3 install -r requirements.txt",
+    "python3 -c 'import fastapi; print(\"FastAPI installed successfully\")'",
     "npm install",
     "cd frontend && npm install"
 ]
