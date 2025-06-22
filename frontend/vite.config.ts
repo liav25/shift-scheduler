@@ -10,7 +10,14 @@ export default defineConfig({
   },
   preview: {
     port: 3000,
-    host: '0.0.0.0'
+    host: '0.0.0.0',
+    allowedHosts: [
+      'localhost',
+      '127.0.0.1',
+      'shift-scheduler-production.up.railway.app',
+      // Allow any Railway subdomain
+      '.railway.app'
+    ]
   },
   build: {
     outDir: 'dist',
