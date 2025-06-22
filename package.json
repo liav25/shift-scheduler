@@ -1,0 +1,19 @@
+{
+  "name": "shifts-algo",
+  "version": "0.0.1a",
+  "description": "Shift scheduling algorithm with React frontend and Python backend",
+  "private": true,
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "install": "cd frontend && npm install",
+    "start": "npm run start:backend & npm run start:frontend & wait",
+    "start:backend": "cd backend && python main.py",
+    "start:frontend": "cd frontend && npm run dev",
+    "dev": "npm run start",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && python main.py"
+  },
+  "workspaces": [
+    "frontend"
+  ]
+} 
