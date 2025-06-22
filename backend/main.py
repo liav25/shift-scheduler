@@ -151,7 +151,7 @@ class TimeValidationResponse(BaseModel):
 
 
 # API Endpoints
-@app.get("/", tags=["Health"])
+@app.get("/api", tags=["Health"])
 async def root():
     """Health check endpoint"""
     return {
