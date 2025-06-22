@@ -1,6 +1,6 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "cd frontend && npm install && npm run build && cd .. && rm -rf backend/static && mkdir -p backend/static && cp -r frontend/dist/* backend/static/"
+buildCommand = "cd frontend && npm install && npm run build && cd .. && ls -la frontend/ && ls -la frontend/dist/ && rm -rf backend/static && mkdir -p backend/static && cp -r frontend/dist/* backend/static/ && ls -la backend/static/"
 nixpacksPlan = { "providers" = ["python", "node"] }
 
 [deploy]
