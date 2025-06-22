@@ -27,9 +27,22 @@ export const COLORS = {
   info: 'indigo',
 } as const;
 
-// API Configuration
+// API Configuration - use current domain in production, localhost in development
+const getBaseURL = () => {
+  // In development - check if we're on localhost
+  const isDev = window.location.hostname === 'localhost' || 
+                window.location.hostname === '127.0.0.1';
+                
+  if (isDev) {
+    return 'http://localhost:8000';
+  }
+  
+  // In production (Railway), use current domain
+  return window.location.origin;
+};
+
 export const API_CONFIG = {
-  baseURL: 'http://localhost:8000',
+  baseURL: getBaseURL(),
   timeout: 30000,
 } as const;
 

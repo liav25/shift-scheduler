@@ -1,5 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field, validator
 from typing import List, Dict, Optional
 from datetime import datetime
@@ -17,6 +19,11 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+# Mount static files for frontend (Railway deployment)
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+if os.path.exists(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 # Enable CORS for frontend
 cors_origins = [
@@ -333,6 +340,27 @@ async def get_algorithm_info():
             "Post coverage requirements",
         ],
     }
+
+
+# Serve frontend for all non-API routes (Railway deployment)
+@app.get("/{full_path:path}", include_in_schema=False)
+async def serve_frontend(full_path: str):
+    """Serve the frontend app for all non-API routes"""
+    static_dir = os.path.join(os.path.dirname(__file__), "static")
+    index_file = os.path.join(static_dir, "index.html")
+
+    # If it's a request for a static file, try to serve it
+    if "." in full_path:
+        file_path = os.path.join(static_dir, full_path)
+        if os.path.exists(file_path):
+            return FileResponse(file_path)
+
+    # Otherwise serve index.html for SPA routing
+    if os.path.exists(index_file):
+        return FileResponse(index_file)
+
+    # Fallback
+    return {"message": "Frontend not built. Run 'npm run build' first."}
 
 
 if __name__ == "__main__":
