@@ -6,10 +6,10 @@
   "scripts": {
     "build": "cd frontend && npm install --no-save && npm run build",
     "install:frontend": "cd frontend && npm install",
-    "start": "npm run start:backend & npm run start:frontend & wait",
+    "start": "cd backend && python main.py",
     "start:backend": "cd backend && python main.py",
     "start:frontend": "cd frontend && npm run dev",
-    "dev": "npm run start",
+    "dev": "npm run start:backend & npm run start:frontend & wait",
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && python main.py"
   },
