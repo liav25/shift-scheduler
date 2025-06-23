@@ -14,8 +14,8 @@ export const DEFAULT_FORM_VALUES = {
   nightStartTime: '01:00',
   nightEndTime: '06:00',
   maxConsecutiveNights: 1,
-  defaultGuards: ['Guard 1'],
-  defaultPosts: ['Main Gate'],
+  defaultGuards: [],
+  defaultPosts: [],
 };
 
 // UI Constants

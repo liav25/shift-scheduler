@@ -33,8 +33,8 @@ const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({ onClose }) => {
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div className="flex items-center">
-            <Info className="h-6 w-6 text-blue-600 mr-2" />
-            <h2 className="text-xl font-semibold text-gray-900">Algorithm Information</h2>
+            <Info className="h-6 w-6 text-blue-600 ml-2" />
+            <h2 className="text-xl font-semibold text-gray-900">מידע על האלגוריתם</h2>
           </div>
           <button
             onClick={onClose}
@@ -49,15 +49,15 @@ const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({ onClose }) => {
           {isLoading && (
             <div className="flex items-center justify-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <span className="ml-3 text-gray-600">Loading algorithm information...</span>
+              <span className="mr-3 text-gray-600">טוען מידע על האלגוריתם...</span>
             </div>
           )}
 
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
               <div className="flex items-center">
-                <AlertCircle className="h-5 w-5 text-red-600 mr-2" />
-                <span className="text-red-800 font-medium">Error</span>
+                <AlertCircle className="h-5 w-5 text-red-600 ml-2" />
+                <span className="text-red-800 font-medium">שגיאה</span>
               </div>
               <p className="text-red-700 mt-2">{error}</p>
             </div>
@@ -77,11 +77,11 @@ const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({ onClose }) => {
 
               {/* Features */}
               <div>
-                <h4 className="text-md font-semibold text-gray-900 mb-3">Key Features</h4>
+                <h4 className="text-md font-semibold text-gray-900 mb-3">תכונות מרכזיות</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {algorithmData.features.map((feature, index) => (
                     <div key={index} className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-green-600 mr-2 mt-0.5 flex-shrink-0" />
+                      <CheckCircle className="h-5 w-5 text-green-600 ml-2 mt-0.5 flex-shrink-0" />
                       <span className="text-gray-700 text-sm">{feature}</span>
                     </div>
                   ))}
@@ -90,11 +90,11 @@ const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({ onClose }) => {
 
               {/* Constraints */}
               <div>
-                <h4 className="text-md font-semibold text-gray-900 mb-3">Constraints Handled</h4>
+                <h4 className="text-md font-semibold text-gray-900 mb-3">אילוצים מטופלים</h4>
                 <div className="space-y-2">
                   {algorithmData.constraints.map((constraint, index) => (
                     <div key={index} className="flex items-start">
-                      <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 ml-3 flex-shrink-0"></div>
                       <span className="text-gray-700 text-sm">{constraint}</span>
                     </div>
                   ))}
@@ -103,23 +103,23 @@ const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({ onClose }) => {
 
               {/* How It Works */}
               <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                <h4 className="text-md font-semibold text-blue-900 mb-3">How It Works</h4>
+                <h4 className="text-md font-semibold text-blue-900 mb-3">איך זה עובד</h4>
                 <div className="space-y-3 text-sm text-blue-800">
                   <div className="flex items-start">
-                    <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium mr-3 mt-0.5 flex-shrink-0">1</span>
-                    <span>Creates rotating queues for each post with all guards</span>
+                    <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium ml-3 mt-0.5 flex-shrink-0">1</span>
+                    <span>יוצר תורים מתחלפים לכל עמדה עם כל החיילים</span>
                   </div>
                   <div className="flex items-start">
-                    <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium mr-3 mt-0.5 flex-shrink-0">2</span>
-                    <span>For each time slot, selects the next available guard from the queue</span>
+                    <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium ml-3 mt-0.5 flex-shrink-0">2</span>
+                    <span>לכל חלון זמן, בוחר את החייל הזמין הבא מהתור</span>
                   </div>
                   <div className="flex items-start">
-                    <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium mr-3 mt-0.5 flex-shrink-0">3</span>
-                    <span>Checks guard availability and constraint violations</span>
+                    <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium ml-3 mt-0.5 flex-shrink-0">3</span>
+                    <span>בודק זמינות חייל והפרות אילוצים</span>
                   </div>
                   <div className="flex items-start">
-                    <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium mr-3 mt-0.5 flex-shrink-0">4</span>
-                    <span>Assigns shifts and rotates guards to back of queue for fairness</span>
+                    <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium ml-3 mt-0.5 flex-shrink-0">4</span>
+                    <span>מקצה משמרות ומעביר חיילים לסוף התור להוגנות</span>
                   </div>
                 </div>
               </div>
@@ -133,7 +133,7 @@ const AlgorithmInfo: React.FC<AlgorithmInfoProps> = ({ onClose }) => {
             onClick={onClose}
             className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
           >
-            Close
+            סגור
           </button>
         </div>
       </div>

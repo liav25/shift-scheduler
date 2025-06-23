@@ -26,12 +26,12 @@ const SchedulePeriodSection: React.FC<SchedulePeriodSectionProps> = ({
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
-        📅 Schedule Period
+        📅 תקופת רשימת השמירה
       </h3>
       <div className="grid grid-cols-2 gap-4">
         <Input
           type="date"
-          label="Start Date"
+          label="תאריך התחלה"
           value={startDate}
           onChange={(e) => onDateChange('startDate', e.target.value)}
           required
@@ -39,7 +39,7 @@ const SchedulePeriodSection: React.FC<SchedulePeriodSectionProps> = ({
         />
         
         <Select
-          label="Start Time"
+          label="שעת התחלה"
           value={startTime}
           onChange={(e) => onTimeChange('startTime', e.target.value)}
           options={timeOptions}
@@ -49,7 +49,7 @@ const SchedulePeriodSection: React.FC<SchedulePeriodSectionProps> = ({
         
         <Input
           type="date"
-          label="End Date"
+          label="תאריך סיום"
           value={endDate}
           onChange={(e) => onDateChange('endDate', e.target.value)}
           required
@@ -57,7 +57,7 @@ const SchedulePeriodSection: React.FC<SchedulePeriodSectionProps> = ({
         />
         
         <Select
-          label="End Time"
+          label="שעת סיום"
           value={endTime}
           onChange={(e) => onTimeChange('endTime', e.target.value)}
           options={timeOptions}

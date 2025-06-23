@@ -50,7 +50,7 @@ const ChipInputSection: React.FC<ChipInputSectionProps> = ({
         onChange={(e) => setInputValue(e.target.value)}
         onKeyPress={handleKeyPress}
         placeholder={placeholder}
-        helper="Press Enter to add"
+        helper="לחץ Enter להוספה"
         disabled={disabled}
       />
 
@@ -68,7 +68,7 @@ const ChipInputSection: React.FC<ChipInputSectionProps> = ({
       </div>
 
       {items.length === 0 && (
-        <p className="text-sm text-gray-500 italic">No {title.toLowerCase()} added yet</p>
+        <p className="text-sm text-gray-500 italic">טרם נוספו {title.toLowerCase()}</p>
       )}
     </div>
   );

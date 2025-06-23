@@ -36,7 +36,7 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
   const timeOptions = TIME_OPTIONS.map(time => ({ value: time, label: time }));
   const shiftHourOptions = SHIFT_HOUR_OPTIONS.map(hours => ({
     value: hours,
-    label: `${hours % 1 === 0 ? `${hours}.0` : hours} hours`
+    label: `${hours % 1 === 0 ? `${hours}.0` : hours} שעות`
   }));
 
   const validateTimeInput = async (time: string, field: string) => {
@@ -179,10 +179,10 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
 
         {/* Guards Management */}
         <ChipInputSection
-          title="Guards"
+          title="חיילים"
           emoji="👥"
           items={formData.guards}
-          placeholder="Type guard name and press Enter"
+          placeholder="הקלד שם חייל ולחץ Enter"
           variant="blue"
           disabled={disabled}
           onAdd={addGuard}
@@ -191,10 +191,10 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
 
         {/* Posts Management */}
         <ChipInputSection
-          title="Posts"
+          title="עמדות שמירה"
           emoji="🏢"
           items={formData.posts}
-          placeholder="Type post name and press Enter"
+          placeholder="הקלד שם עמדה ולחץ Enter"
           variant="green"
           disabled={disabled}
           onAdd={addPost}
@@ -204,10 +204,10 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
         {/* Guard Unavailability */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
-            🚫 Guard Unavailability
+            🚫 אי-זמינות חיילים
           </h3>
           <p className="text-sm text-gray-600">
-            Set periods when guards cannot work (optional)
+            קבע תקופות בהן חיילים לא יכולים לעבוד (אופציונלי)
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -222,7 +222,7 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
                     size="sm"
                     disabled={disabled}
                   >
-                    + Add Period
+                    + הוסף תקופה
                   </Button>
                 </div>
                 
@@ -231,7 +231,7 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
                     <div key={index} className="space-y-2">
                       <div className="grid grid-cols-1 gap-2">
                         <div>
-                          <label className="block text-xs font-medium text-gray-600 mb-1">From</label>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">מ:</label>
                           <input
                             type="datetime-local"
                             value={window.start}
@@ -241,7 +241,7 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-gray-600 mb-1">To</label>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">עד:</label>
                           <input
                             type="datetime-local"
                             value={window.end}
@@ -260,14 +260,14 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
                           disabled={disabled}
                           className="p-1"
                         >
-                          × Remove Period
+                          × הסר תקופה
                         </Button>
                       </div>
                     </div>
                   ))}
                   
                   {(!unavailability[guard] || unavailability[guard].length === 0) && (
-                    <p className="text-xs text-gray-500 italic">No unavailable periods</p>
+                    <p className="text-xs text-gray-500 italic">אין תקופות אי-זמינות</p>
                   )}
                 </div>
               </div>
@@ -278,11 +278,11 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
         {/* Shift Configuration */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
-            ⚙️ Shift Configuration
+            ⚙️ הגדרות משמרות
           </h3>
           <div className="grid grid-cols-2 gap-4">
             <Select
-              label="Day Shift Hours"
+              label="שעות משמרת יום"
               value={formData.dayShiftHours}
               onChange={(e) => setFormData(prev => ({ ...prev, dayShiftHours: Number(e.target.value) }))}
               options={shiftHourOptions}
@@ -291,7 +291,7 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
             />
             
             <Select
-              label="Night Shift Hours"
+              label="שעות משמרת לילה"
               value={formData.nightShiftHours}
               onChange={(e) => setFormData(prev => ({ ...prev, nightShiftHours: Number(e.target.value) }))}
               options={shiftHourOptions}
@@ -300,7 +300,7 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
             />
             
             <Select
-              label="Night Shift Start"
+              label="תחילת משמרת לילה"
               value={formData.nightStartTime}
               onChange={(e) => handleTimeChange('nightStartTime', e.target.value)}
               options={timeOptions}
@@ -309,7 +309,7 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
             />
             
             <Select
-              label="Night Shift End"
+              label="סיום משמרת לילה"
               value={formData.nightEndTime}
               onChange={(e) => handleTimeChange('nightEndTime', e.target.value)}
               options={timeOptions}
@@ -320,7 +320,7 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Max Consecutive Nights
+                מקס' לילות רצופים
               </label>
               <input
                 type="number"
@@ -345,12 +345,12 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
             size="lg"
             className="w-full"
           >
-            {isLoading ? 'Generating Schedule...' : 'Generate Schedule'}
+            {isLoading ? 'יוצר רשימת שמירה...' : 'צור רשימת שמירה'}
           </Button>
           
           {disabled && (
             <p className="text-sm text-red-600 text-center mt-2">
-              Backend server not connected. Please ensure the server is running.
+              השרת האחורי לא מחובר. אנא וודא שהשרת פועל.
             </p>
           )}
         </div>
@@ -361,19 +361,19 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl">
             <div className="flex items-center mb-4">
-              <AlertTriangle className="h-6 w-6 text-yellow-600 mr-2" />
-              <h3 className="text-lg font-semibold text-gray-900">Invalid Time Format</h3>
+              <AlertTriangle className="h-6 w-6 text-yellow-600 ml-2" />
+              <h3 className="text-lg font-semibold text-gray-900">פורמט זמן לא תקין</h3>
             </div>
             <p className="text-gray-600 mb-4">{timePopup.message}</p>
             <p className="text-gray-600 mb-6">
-              Suggested time: <strong className="text-blue-600">{timePopup.suggestedTime}</strong>
+              זמן מוצע: <strong className="text-blue-600">{timePopup.suggestedTime}</strong>
             </p>
             <div className="flex space-x-3">
               <Button onClick={timePopup.onAccept} variant="primary" className="flex-1">
-                Use Suggested Time
+                השתמש בזמן המוצע
               </Button>
               <Button onClick={timePopup.onCancel} variant="secondary" className="flex-1">
-                Cancel
+                ביטול
               </Button>
             </div>
           </div>

@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities; 
+@tailwind utilities;
+
+/* RTL Support for Hebrew */
+html[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir="rtl"] body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Fix flex directions for RTL */
+html[dir="rtl"] .flex {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .space-x-reverse > * + * {
+  margin-left: 0.25rem;
+  margin-right: 0;
+}
+
+html[dir="rtl"] .space-x-3 > * + * {
+  margin-left: 0.75rem;
+  margin-right: 0;
+}
+
+html[dir="rtl"] .space-x-4 > * + * {
+  margin-left: 1rem;
+  margin-right: 0;
+} 
