@@ -22,7 +22,9 @@ class QueueScheduler:
         schedule_start_datetime: str,
         schedule_end_datetime: str,
         guards: List[str],
-        posts: List[str],
+        posts: Dict[
+            str, Dict
+        ],  # Changed from List[str] to Dict[str, Dict] for post configurations
         unavailability: Dict[str, List[Dict[str, str]]],
         shift_lengths: Dict[str, float],
         night_time_range: Dict[str, str],
@@ -31,7 +33,8 @@ class QueueScheduler:
         self.schedule_start = datetime.fromisoformat(schedule_start_datetime)
         self.schedule_end = datetime.fromisoformat(schedule_end_datetime)
         self.guards = guards
-        self.posts = posts
+        self.posts = posts  # Dict of post_name -> post_config
+        self.post_names = list(posts.keys())  # List of post names for iteration
         self.unavailability = self._parse_unavailability(unavailability)
         self.day_shift_hours = shift_lengths["day_shift_hours"]
         self.night_shift_hours = shift_lengths["night_shift_hours"]
@@ -41,7 +44,9 @@ class QueueScheduler:
         self.max_consecutive_nights = max_consecutive_nights
 
         # Initialize guard queues (one per post)
-        self.guard_queues = {post: deque(guards.copy()) for post in posts}
+        self.guard_queues = {
+            post_name: deque(guards.copy()) for post_name in self.post_names
+        }
 
         # Track guard states
         self.guard_states = {
@@ -142,6 +147,40 @@ class QueueScheduler:
 
         return True
 
+    def _is_post_required_at_time(self, post_config: Dict, time: datetime) -> bool:
+        """Check if a post is required at the given time based on its configuration."""
+        if post_config.get("is_24_7", True):
+            return True
+
+        required_start = post_config.get("required_hours_start")
+        required_end = post_config.get("required_hours_end")
+
+        if not required_start or not required_end:
+            return False
+
+        try:
+            # Format time as HH:MM for comparison
+            time_str = time.strftime("%H:%M")
+
+            # Parse time components
+            time_hour, time_min = map(int, time_str.split(":"))
+            start_hour, start_min = map(int, required_start.split(":"))
+            end_hour, end_min = map(int, required_end.split(":"))
+
+            # Convert to minutes for easier comparison
+            time_minutes = time_hour * 60 + time_min
+            start_minutes = start_hour * 60 + start_min
+            end_minutes = end_hour * 60 + end_min
+
+            # Handle overnight ranges (e.g., 22:00 - 06:00)
+            if start_minutes > end_minutes:
+                return time_minutes >= start_minutes or time_minutes < end_minutes
+            else:
+                return start_minutes <= time_minutes < end_minutes
+
+        except (ValueError, AttributeError):
+            return False
+
     def _calculate_penalty(self, guard: str, slot: Dict) -> float:
         """Calculate penalty score for assigning this guard to this slot."""
         penalty = 0.0
@@ -237,21 +276,25 @@ class QueueScheduler:
             slot_assignments = []
 
             # Try to assign a guard to each post for this time slot
-            for post in self.posts:
-                guard = self._find_best_guard(post, slot)
+            for post_name in self.post_names:
+                post_config = self.posts[post_name]
 
-                if guard:
-                    assignment = {
-                        "guard_id": guard,
-                        "post_id": post,
-                        "shift_start_time": slot["start"].isoformat(),
-                        "shift_end_time": slot["end"].isoformat(),
-                    }
-                    slot_assignments.append(assignment)
-                    self._assign_shift(guard, post, slot)
-                else:
-                    # Could not find available guard for this post
-                    failed_slots.append((slot, post))
+                # Check if this post is required at this time
+                if self._is_post_required_at_time(post_config, slot["start"]):
+                    guard = self._find_best_guard(post_name, slot)
+
+                    if guard:
+                        assignment = {
+                            "guard_id": guard,
+                            "post_id": post_name,
+                            "shift_start_time": slot["start"].isoformat(),
+                            "shift_end_time": slot["end"].isoformat(),
+                        }
+                        slot_assignments.append(assignment)
+                        self._assign_shift(guard, post_name, slot)
+                    else:
+                        # Could not find available guard for this post
+                        failed_slots.append((slot, post_name))
 
             assignments.extend(slot_assignments)
 

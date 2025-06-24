@@ -13,11 +13,18 @@ export interface NightTimeRange {
   end: string;
 }
 
+export interface PostConfig {
+  name: string;
+  is_24_7: boolean;
+  required_hours_start?: string;
+  required_hours_end?: string;
+}
+
 export interface ScheduleRequest {
   schedule_start_datetime: string;
   schedule_end_datetime: string;
   guards: string[];
-  posts: string[];
+  posts: PostConfig[];
   unavailability: Record<string, UnavailabilityWindow[]>;
   shift_lengths: ShiftLengths;
   night_time_range: NightTimeRange;
@@ -58,7 +65,7 @@ export interface FormData {
   endDate: string;
   endTime: string;
   guards: string[];
-  posts: string[];
+  posts: PostConfig[];
   dayShiftHours: number;
   nightShiftHours: number;
   nightStartTime: string;

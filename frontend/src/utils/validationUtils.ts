@@ -39,14 +39,27 @@ export const validateFormData = (formData: FormData): ValidationResult => {
     errors.push(`Maximum ${SCHEDULE_CONSTRAINTS.maxPosts} posts allowed`);
   }
 
+  // Post configuration validation
+  formData.posts.forEach((post, index) => {
+    if (!post.name.trim()) {
+      errors.push(`Post ${index + 1} must have a name`);
+    }
+    
+    if (!post.is_24_7) {
+      if (!post.required_hours_start || !post.required_hours_end) {
+        errors.push(`Post "${post.name}" must have both start and end times when not 24/7`);
+      }
+    }
+  });
+
   // Shift hours validation
   if (formData.dayShiftHours < SCHEDULE_CONSTRAINTS.minShiftHours || 
       formData.dayShiftHours > SCHEDULE_CONSTRAINTS.maxShiftHours) {
-    errors.push(`Day shift hours must be between ${SCHEDULE_CONSTRAINTS.minShiftHours} and ${SCHEDULE_CONSTRAINTS.maxShiftHours}`);
+    errors.push(`זמני משמרת היום חייבים להיות בין ${SCHEDULE_CONSTRAINTS.minShiftHours} ו-  ${SCHEDULE_CONSTRAINTS.maxShiftHours}`);
   }
   if (formData.nightShiftHours < SCHEDULE_CONSTRAINTS.minShiftHours || 
       formData.nightShiftHours > SCHEDULE_CONSTRAINTS.maxShiftHours) {
-    errors.push(`Night shift hours must be between ${SCHEDULE_CONSTRAINTS.minShiftHours} and ${SCHEDULE_CONSTRAINTS.maxShiftHours}`);
+    errors.push(`זמני משמרת לילה חייבים להיות בין ${SCHEDULE_CONSTRAINTS.minShiftHours} ו-  ${SCHEDULE_CONSTRAINTS.maxShiftHours}`);
   }
 
   return {

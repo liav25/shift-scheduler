@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Play, AlertTriangle } from 'lucide-react';
-import { ScheduleRequest, UnavailabilityWindow, FormData, TimeValidationPopup } from '../types';
+import { ScheduleRequest, UnavailabilityWindow, FormData, TimeValidationPopup, PostConfig } from '../types';
 import { validateTime } from '../services/api';
 import { validateFormData } from '../utils/validationUtils';
 import { getTodayDateString, getDateFromToday } from '../utils/dateUtils';
@@ -8,6 +8,7 @@ import { DEFAULT_FORM_VALUES, TIME_OPTIONS, SHIFT_HOUR_OPTIONS } from '../consta
 import { Button, Select } from '../ui';
 import SchedulePeriodSection from '../features/scheduler/components/SchedulePeriodSection';
 import ChipInputSection from '../features/scheduler/components/ChipInputSection';
+import PostConfigSection from '../features/scheduler/components/PostConfigSection';
 
 interface SchedulerFormProps {
   onSubmit: (request: ScheduleRequest) => void;
@@ -96,14 +97,21 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
     }
   };
 
-  const addPost = (postName: string) => {
-    setFormData(prev => ({ ...prev, posts: [...prev.posts, postName] }));
+  const addPost = (post: PostConfig) => {
+    setFormData(prev => ({ ...prev, posts: [...prev.posts, post] }));
   };
 
   const removePost = (index: number) => {
     setFormData(prev => ({
       ...prev,
       posts: prev.posts.filter((_, i) => i !== index),
+    }));
+  };
+
+  const updatePost = (index: number, post: PostConfig) => {
+    setFormData(prev => ({
+      ...prev,
+      posts: prev.posts.map((p, i) => i === index ? post : p),
     }));
   };
 
@@ -147,7 +155,7 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
       schedule_start_datetime: `${formData.startDate}T${formData.startTime}:00`,
       schedule_end_datetime: `${formData.endDate}T${formData.endTime}:00`,
       guards: formData.guards.filter(guard => guard.trim()),
-      posts: formData.posts.filter(post => post.trim()),
+      posts: formData.posts.filter(post => post.name.trim()),
       unavailability,
       shift_lengths: {
         day_shift_hours: formData.dayShiftHours,
@@ -190,15 +198,12 @@ const SchedulerForm: React.FC<SchedulerFormProps> = ({ onSubmit, isLoading, disa
         />
 
         {/* Posts Management */}
-        <ChipInputSection
-          title="עמדות שמירה"
-          emoji="🏢"
-          items={formData.posts}
-          placeholder="הקלד שם עמדה ולחץ Enter"
-          variant="green"
+        <PostConfigSection
+          posts={formData.posts}
           disabled={disabled}
           onAdd={addPost}
           onRemove={removePost}
+          onUpdate={updatePost}
         />
 
         {/* Guard Unavailability */}

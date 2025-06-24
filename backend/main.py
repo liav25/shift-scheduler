@@ -90,6 +90,70 @@ class NightTimeRange(BaseModel):
             raise ValueError("Invalid time format. Use HH:MM format.")
 
 
+class PostConfig(BaseModel):
+    name: str = Field(..., min_length=1, description="Post name")
+    is_24_7: bool = Field(
+        default=True, description="Whether post requires 24/7 coverage"
+    )
+    required_hours_start: Optional[str] = Field(
+        None, description="Start time for required coverage (HH:MM)"
+    )
+    required_hours_end: Optional[str] = Field(
+        None, description="End time for required coverage (HH:MM)"
+    )
+
+    @validator("required_hours_start", "required_hours_end")
+    def validate_time_format(cls, v):
+        if v is None:
+            return v
+        try:
+            hour, minute = v.split(":")
+            hour, minute = int(hour), int(minute)
+            if not (0 <= hour <= 23 and 0 <= minute <= 59):
+                raise ValueError()
+            return v
+        except (ValueError, AttributeError):
+            raise ValueError("Invalid time format. Use HH:MM format.")
+
+    @validator("required_hours_end")
+    def validate_time_range(cls, v, values):
+        if not values.get("is_24_7") and (
+            not values.get("required_hours_start") or not v
+        ):
+            raise ValueError(
+                "required_hours_start and required_hours_end must be provided when is_24_7 is False"
+            )
+        return v
+
+    def is_required_at_time(self, time_str: str) -> bool:
+        """Check if this post is required at the given time (HH:MM format)"""
+        if self.is_24_7:
+            return True
+
+        if not self.required_hours_start or not self.required_hours_end:
+            return False
+
+        try:
+            # Parse time components
+            time_hour, time_min = map(int, time_str.split(":"))
+            start_hour, start_min = map(int, self.required_hours_start.split(":"))
+            end_hour, end_min = map(int, self.required_hours_end.split(":"))
+
+            # Convert to minutes for easier comparison
+            time_minutes = time_hour * 60 + time_min
+            start_minutes = start_hour * 60 + start_min
+            end_minutes = end_hour * 60 + end_min
+
+            # Handle overnight ranges (e.g., 22:00 - 06:00)
+            if start_minutes > end_minutes:
+                return time_minutes >= start_minutes or time_minutes < end_minutes
+            else:
+                return start_minutes <= time_minutes < end_minutes
+
+        except (ValueError, AttributeError):
+            return False
+
+
 class ScheduleRequest(BaseModel):
     schedule_start_datetime: str = Field(
         ..., description="Schedule start datetime in ISO 8601"
@@ -98,7 +162,9 @@ class ScheduleRequest(BaseModel):
         ..., description="Schedule end datetime in ISO 8601"
     )
     guards: List[str] = Field(..., min_items=1, description="List of guard names")
-    posts: List[str] = Field(..., min_items=1, description="List of post names")
+    posts: List[PostConfig] = Field(
+        ..., min_items=1, description="List of post configurations"
+    )
     unavailability: Dict[str, List[UnavailabilityWindow]] = Field(
         default={}, description="Guard unavailability periods"
     )
@@ -125,9 +191,10 @@ class ScheduleRequest(BaseModel):
 
     @validator("posts")
     def validate_unique_posts(cls, v):
-        if len(v) != len(set(v)):
+        post_names = [post.name for post in v]
+        if len(post_names) != len(set(post_names)):
             raise ValueError("Post names must be unique.")
-        return [post.strip() for post in v if post.strip()]
+        return v
 
 
 class ShiftAssignment(BaseModel):
@@ -202,12 +269,15 @@ async def create_schedule(request: ScheduleRequest):
                     {"start": window.start, "end": window.end} for window in windows
                 ]
 
+        # Convert PostConfig objects to the format expected by scheduler
+        posts_dict = {post.name: post.dict() for post in request.posts}
+
         # Create scheduler instance
         scheduler = QueueScheduler(
             schedule_start_datetime=request.schedule_start_datetime,
             schedule_end_datetime=request.schedule_end_datetime,
             guards=request.guards,
-            posts=request.posts,
+            posts=posts_dict,
             unavailability=unavailability_dict,
             shift_lengths={
                 "day_shift_hours": request.shift_lengths.day_shift_hours,
